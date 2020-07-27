@@ -13,7 +13,6 @@ class jugador():
 		self.contador = 0
 		self.letras = 3
 		self.letras_escogidas = []
-		self.errores = 0
 
 
 	def oculta_palabra(self):
@@ -29,8 +28,12 @@ class jugador():
 
 	def recoge_letra(self):
 		print("\nTurno para " + self.nombre + ": ")
+		if len(self.letras_escogidas) >= 1:
+			print("\nYa has usado: \n" + str(self.letras_escogidas))
 		print("\n" + self.palabra_visual + "\n")
 		letra = input("\n" + self.nombre + " introduce una letra: \n").upper()
+
+		self.letras = len(self.palabra)
 
 		if letra == "A":
 			self.letras_escogidas.append("Á")
@@ -45,7 +48,7 @@ class jugador():
 			self.letras_escogidas.append("Ü")
 
 		self.letras_escogidas.append(letra)
-		print("\nletras escogidas: \n" + str(self.letras_escogidas))
+		
 
 		self.palabra_visual = ""
 		self.contador = 0
@@ -64,6 +67,7 @@ class jugador():
 		else:
 			self.errores = self.errores + 1
 			print("\nErrores: " + str(self.errores))
+		print("contador: " + str(self.contador))
 
 		print("\n" + self.palabra_visual + "\n")
 		print("------------------------------------------------")
@@ -78,15 +82,32 @@ def main():
 	palabra1 = getpass.getpass(nombre1 + ", introduce la palabra que deberá adivinar " + nombre2 + ": \n")
 	palabra2 = getpass.getpass(nombre2 + ", introduce la palabra que deberá adivinar " + nombre1 + ": \n")
 	jugador1 = jugador(nombre1, palabra2, 0)
-	print(str(jugador1.palabra))
+	#print(str(jugador1.palabra))
 	jugador1.oculta_palabra()
 	jugador2 = jugador(nombre2, palabra1, 0)
-	print(str(jugador2.palabra))
+	#print(str(jugador2.palabra))
 	jugador2.oculta_palabra()
-	print("Comienza " + jugador1.nombre)
+	#print("Comienza " + jugador1.nombre)
 	while jugador1.contador < jugador1.letras and jugador1.errores < 6 or jugador2.contador < jugador2.letras and jugador2.errores < 6:
-		jugador1.recoge_letra()
-		jugador2.recoge_letra()
+		if jugador2.contador != jugador2.letras and jugador2.errores < 6:
+			jugador1.recoge_letra()
+		elif jugador2.contador == jugador2.letras:
+			print(jugador2.nombre + " ha ganado.")
+			break
+		elif jugador2.errores > 5:
+			print(jugador2.nombre + " ha fallado demasiado.\nTú ganas.")
+			break
+
+		if jugador1.contador != jugador1.letras and jugador1.errores < 6:
+			jugador2.recoge_letra()
+		elif jugador1.contador == jugador1.letras:
+			print(jugador1.nombre + " ha ganado.")
+			break
+		elif jugador1.errores > 5:
+			print(jugador1.nombre + " ha fallado demasiado.\nTú ganas.")
+			break
+
+	print("END GAME")
 
 
 
