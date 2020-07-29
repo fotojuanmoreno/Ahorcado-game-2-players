@@ -12,6 +12,7 @@ class jugador():
 		self.contador = 0
 		self.letras = 3
 		self.letras_escogidas = []
+		self.marcador = 0
 
 	def oculta_palabra(self):
 		letra_oculta = "_ "
@@ -71,32 +72,46 @@ def estilo(jugador1, jugador2):
 	print()
 	print(" " + jugador1.palabra_visual + " "*margen_palabra + jugador2.palabra_visual + "\n")
 
+def marcador(jugador1, jugador2):
+	print("\nMarcador:")
+	print(jugador1.nombre + ": " + str(jugador1.marcador))
+	print(jugador2.nombre + ": " + str(jugador2.marcador) + "\n")
+
 def eljuego(jugador1, jugador2):
 	while jugador1.contador < jugador1.letras and jugador1.errores < 6 or jugador2.contador < jugador2.letras and jugador2.errores < 6:
+		
 		estilo(jugador1, jugador2)
 		if jugador2.contador != jugador2.letras and jugador2.errores < 6:
 			jugador1.recoge_letra()
 		elif jugador2.contador == jugador2.letras:
 			print(jugador2.nombre + " ha ganado.\nLa palabra era: " + jugador2.palabra)
 			print("La palabra de " + jugador1.nombre + " era: "+ jugador1.palabra)
+			jugador2.marcador = jugador2.marcador + 1
 			break
 		elif jugador2.errores > 5:
 			print(jugador2.nombre + " ha fallado demasiado.\n" + jugador1.nombre + " gana.")
 			print("La palabra de " + jugador1.nombre + " era: "+ jugador1.palabra + ".\nLa de " + jugador2.nombre + ": " + jugador2.palabra)
+			jugador1.marcador = jugador1.marcador + 1
 			break
+		
 		estilo(jugador1, jugador2)
 		if jugador1.contador != jugador1.letras and jugador1.errores < 6:
 			jugador2.recoge_letra()
 		elif jugador1.contador == jugador1.letras:
 			print(jugador1.nombre + " ha ganado.\nLa palabra era: " + jugador1.palabra)
 			print("La palabra de " + jugador2.nombre + " era: "+ jugador2.palabra)
+			jugador1.marcador = jugador1.marcador + 1
 			break
 		elif jugador1.errores > 5:
 			print(jugador1.nombre + " ha fallado demasiado.\n" + jugador2.nombre + " gana.")
 			print("La palabra de " + jugador2.nombre + " era: "+ jugador2.palabra + ".\nLa de " + jugador1.nombre + ": " + jugador1.palabra)
+			jugador2.marcador = jugador2.marcador + 1
 			break
+
 	repetir = input("¿Hace otra partidita?\nIntroduce y/n: ")
+
 	if repetir != "n":
+		marcador(jugador1, jugador2)
 		jugador1.errores = 0
 		jugador1.palabra_visual = ""
 		jugador1.contador = 0
@@ -115,6 +130,7 @@ def eljuego(jugador1, jugador2):
 				jugador1.palabra = getpass.getpass(jugador1.nombre + ", introduce la palabra que deberá adivinar " + jugador2.nombre + ": \n")
 		jugador1.palabra = jugador1.palabra.upper()
 		jugador1.oculta_palabra()
+		
 		jugador2.errores = 0
 		jugador2.palabra_visual = ""
 		jugador2.contador = 0
@@ -133,15 +149,19 @@ def eljuego(jugador1, jugador2):
 				jugador2.palabra = getpass.getpass(jugador2.nombre + ", introduce la palabra que deberá adivinar " + jugador1.nombre + ": \n")
 		jugador2.palabra = jugador2.palabra.upper()
 		jugador2.oculta_palabra()
+
 		eljuego(jugador1, jugador2)
+
 	else:
 		print("END GAME")
 		time.sleep(2)
 
 def main():
 	print("\nHola y bienvenidos al juego del ahorcado para 2 jugadores.\n")
+
 	nombre1 = input("Jugador 1, introduce tu nombre: ")
 	nombre2 = input("Jugador 2, introduce tu nombre: ")
+
 	palabra1 = getpass.getpass(nombre1 + ", introduce la palabra que deberá adivinar " + nombre2 + ": \n")
 	if len(palabra1) > 20:
 		while len(palabra1) > 20:
@@ -165,10 +185,13 @@ def main():
 			palabra2=""
 			print("No puedes introducir espacios.")
 			palabra2 = getpass.getpass(nombre2 + ", introduce la palabra que deberá adivinar " + nombre1 + ": \n")
+	
 	jugador1 = jugador(nombre1, palabra2, 0)
 	jugador1.oculta_palabra()
+
 	jugador2 = jugador(nombre2, palabra1, 0)
 	jugador2.oculta_palabra()
+
 	eljuego(jugador1, jugador2)
 
 
