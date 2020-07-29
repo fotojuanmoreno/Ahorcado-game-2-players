@@ -1,7 +1,6 @@
 import getpass
 import time
 
-#palabra_visual = ""
 
 class jugador():
 	"""docstring for jugador"""
@@ -14,23 +13,14 @@ class jugador():
 		self.letras = 3
 		self.letras_escogidas = []
 
-
 	def oculta_palabra(self):
-		#global palabra_visual
-
 		letra_oculta = "_ "
 		self.palabra_visual = ""
 
 		for l in self.palabra:
 			self.palabra_visual = self.palabra_visual + letra_oculta
-		#print(palabra_visual)
-		#self.palabra = self.palabra_visual
 
 	def recoge_letra(self):
-		#print("\nTurno para " + self.nombre + ": ")
-		#if len(self.letras_escogidas) >= 1:
-			#print("\nYa has usado: \n" + str(self.letras_escogidas))
-		#print("\n" + self.palabra_visual + "\n")
 		letra = input("Turno para " + self.nombre + ". Introduce una letra: \n").upper()
 
 		self.letras = len(self.palabra)
@@ -48,7 +38,6 @@ class jugador():
 			self.letras_escogidas.append("Ü")
 
 		self.letras_escogidas.append(letra)
-		
 
 		self.palabra_visual = ""
 		self.contador = 0
@@ -67,11 +56,8 @@ class jugador():
 		else:
 			self.errores = self.errores + 1
 			print("\nHas fallado...")
-			#print("\nErrores: " + str(self.errores))
-		#print("contador: " + str(self.contador))
 
-		#print("\n" + self.palabra_visual + "\n")
-		print("------------------------------------------------\n")
+		print("\n------------------------------------------------\n")
 		time.sleep(1)
 	
 def estilo(jugador1, jugador2):
@@ -84,6 +70,73 @@ def estilo(jugador1, jugador2):
 	print(" " + jugador1.nombre + " "*margen_nombre + jugador2.nombre)
 	print()
 	print(" " + jugador1.palabra_visual + " "*margen_palabra + jugador2.palabra_visual + "\n")
+
+def eljuego(jugador1, jugador2):
+	while jugador1.contador < jugador1.letras and jugador1.errores < 6 or jugador2.contador < jugador2.letras and jugador2.errores < 6:
+		estilo(jugador1, jugador2)
+		if jugador2.contador != jugador2.letras and jugador2.errores < 6:
+			jugador1.recoge_letra()
+		elif jugador2.contador == jugador2.letras:
+			print(jugador2.nombre + " ha ganado.\nLa palabra era: " + jugador2.palabra)
+			print("La palabra de " + jugador1.nombre + " era: "+ jugador1.palabra)
+			break
+		elif jugador2.errores > 5:
+			print(jugador2.nombre + " ha fallado demasiado.\n" + jugador1.nombre + " gana.")
+			print("La palabra de " + jugador1.nombre + " era: "+ jugador1.palabra + ".\nLa de " + jugador2.nombre + ": " + jugador2.palabra)
+			break
+		estilo(jugador1, jugador2)
+		if jugador1.contador != jugador1.letras and jugador1.errores < 6:
+			jugador2.recoge_letra()
+		elif jugador1.contador == jugador1.letras:
+			print(jugador1.nombre + " ha ganado.\nLa palabra era: " + jugador1.palabra)
+			print("La palabra de " + jugador2.nombre + " era: "+ jugador2.palabra)
+			break
+		elif jugador1.errores > 5:
+			print(jugador1.nombre + " ha fallado demasiado.\n" + jugador2.nombre + " gana.")
+			print("La palabra de " + jugador2.nombre + " era: "+ jugador2.palabra + ".\nLa de " + jugador1.nombre + ": " + jugador1.palabra)
+			break
+	repetir = input("¿Hace otra partidita?\nIntroduce y/n: ")
+	if repetir != "n":
+		jugador1.errores = 0
+		jugador1.palabra_visual = ""
+		jugador1.contador = 0
+		jugador1.letras = 3
+		jugador1.letras_escogidas = []
+		jugador1.palabra = getpass.getpass(jugador1.nombre + ", introduce la palabra que deberá adivinar " + jugador2.nombre + ": \n")
+		if len(jugador1.palabra) > 20:
+			while len(jugador1.palabra) > 20:
+				jugador1.palabra=""
+				print("Tu palabra es demasiado larga. Prueba otra vez.")
+				jugador1.palabra = getpass.getpass(jugador1.nombre + ", introduce la palabra que deberá adivinar " + jugador2.nombre + ": \n")
+		elif " " in jugador1.palabra:
+			while " " in jugador1.palabra:
+				jugador1.palabra=""
+				print("No puedes introducir espacios.")
+				jugador1.palabra = getpass.getpass(jugador1.nombre + ", introduce la palabra que deberá adivinar " + jugador2.nombre + ": \n")
+		jugador1.palabra = jugador1.palabra.upper()
+		jugador1.oculta_palabra()
+		jugador2.errores = 0
+		jugador2.palabra_visual = ""
+		jugador2.contador = 0
+		jugador2.letras = 3
+		jugador2.letras_escogidas = []		
+		jugador2.palabra = getpass.getpass(jugador2.nombre + ", introduce la palabra que deberá adivinar " + jugador1.nombre + ": \n")
+		if len(jugador2.palabra) > 20:
+			while len(jugador2.palabra) > 20:
+				jugador2.palabra=""
+				print("Tu palabra es demasiado larga. Prueba otra vez.")
+				jugador2.palabra = getpass.getpass(jugador2.nombre + ", introduce la palabra que deberá adivinar " + jugador1.nombre + ": \n")
+		elif " " in jugador2.palabra:
+			while " " in jugador2.palabra:
+				jugador2.palabra=""
+				print("No puedes introducir espacios.")
+				jugador2.palabra = getpass.getpass(jugador2.nombre + ", introduce la palabra que deberá adivinar " + jugador1.nombre + ": \n")
+		jugador2.palabra = jugador2.palabra.upper()
+		jugador2.oculta_palabra()
+		eljuego(jugador1, jugador2)
+	else:
+		print("END GAME")
+		time.sleep(2)
 
 def main():
 	print("\nHola y bienvenidos al juego del ahorcado para 2 jugadores.\n")
@@ -112,39 +165,11 @@ def main():
 			palabra2=""
 			print("No puedes introducir espacios.")
 			palabra2 = getpass.getpass(nombre2 + ", introduce la palabra que deberá adivinar " + nombre1 + ": \n")
-
 	jugador1 = jugador(nombre1, palabra2, 0)
-	#print(str(jugador1.palabra))
 	jugador1.oculta_palabra()
 	jugador2 = jugador(nombre2, palabra1, 0)
-	#print(str(jugador2.palabra))
 	jugador2.oculta_palabra()
-	#print("Comienza " + jugador1.nombre)
-	while jugador1.contador < jugador1.letras and jugador1.errores < 6 or jugador2.contador < jugador2.letras and jugador2.errores < 6:
-		estilo(jugador1, jugador2)
-		if jugador2.contador != jugador2.letras and jugador2.errores < 6:
-			jugador1.recoge_letra()
-		elif jugador2.contador == jugador2.letras:
-			print(jugador2.nombre + " ha ganado.")
-			break
-		elif jugador2.errores > 5:
-			print(jugador2.nombre + " ha fallado demasiado.\nTú ganas.")
-			break
-		estilo(jugador1, jugador2)
-		if jugador1.contador != jugador1.letras and jugador1.errores < 6:
-			jugador2.recoge_letra()
-		elif jugador1.contador == jugador1.letras:
-			print(jugador1.nombre + " ha ganado.")
-			break
-		elif jugador1.errores > 5:
-			print(jugador1.nombre + " ha fallado demasiado.\nTú ganas.")
-			break
-
-	print("END GAME")
-
-
-
-		
+	eljuego(jugador1, jugador2)
 
 
 if __name__ == '__main__':
