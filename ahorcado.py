@@ -22,21 +22,50 @@ class jugador():
 			self.palabra_visual = self.palabra_visual + letra_oculta
 
 	def recoge_letra(self):
+		valoresadmitidos = "qweértyuúüiíoópaásdfghjklzxcvbnmQWEÉRTYUÚÜIÍOÓPAÁSDFGHJKLÑZXCVBNM"
+
 		letra = input("Turno para " + self.nombre + ". Introduce una letra: \n").upper()
+
+		if letra in valoresadmitidos and len(letra) == 1:
+			pass
+		elif letra in valoresadmitidos and len(letra) != 1:
+			print("Indroduce una unica letra.")
+			while letra not in valoresadmitidos or len(letra) != 1:
+				letra = ""
+				letra = input("Turno para " + self.nombre + ". Introduce una letra: \n").upper()
+		else:
+			print("Ese no es un carater valido.")
+			while letra not in valoresadmitidos or len(letra) != 1:
+				letra = ""
+				letra = input("Turno para " + self.nombre + ". Introduce una letra: \n").upper()
 
 		self.letras = len(self.palabra)
 
 		if letra == "A":
 			self.letras_escogidas.append("Á")
+		elif letra == "Á":
+			self.letras_escogidas.append("A")
 		elif letra == "E":
 			self.letras_escogidas.append("É")
+		elif letra == "É":
+			self.letras_escogidas.append("E")
 		elif letra == "I":
 			self.letras_escogidas.append("Í")
+		elif letra == "Í":
+			self.letras_escogidas.append("I")
 		elif letra == "O":
 			self.letras_escogidas.append("Ó")
+		elif letra == "Ó":
+			self.letras_escogidas.append("O")
 		elif letra == "U":
 			self.letras_escogidas.append("Ú")
 			self.letras_escogidas.append("Ü")
+		elif letra == "Ú":
+			self.letras_escogidas.append("U")
+			self.letras_escogidas.append("Ü")
+		elif letra == "Ü":
+			self.letras_escogidas.append("Ú")
+			self.letras_escogidas.append("U")
 
 		self.letras_escogidas.append(letra)
 
@@ -60,6 +89,8 @@ class jugador():
 
 		print("\n------------------------------------------------\n")
 		time.sleep(1)
+	
+
 	
 def estilo(jugador1, jugador2):
 	margen_nombre = 40 - len(jugador1.nombre)
@@ -197,4 +228,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-
