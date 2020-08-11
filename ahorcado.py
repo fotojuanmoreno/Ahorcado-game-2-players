@@ -15,7 +15,6 @@ class jugador():
 		self.letras_escogidas = []
 		self.marcador = 0
 		
-
 	def oculta_palabra(self):
 		letra_oculta = "_ "
 		self.palabra_visual = ""
@@ -117,7 +116,6 @@ class jugador():
 		self.contador = 0
 		self.letras = 3
 		self.letras_escogidas = []
-		
 
 def estilo(jugador1, jugador2):
 	margen_nombre = 40 - len(jugador1.nombre)
@@ -171,10 +169,9 @@ def eljuego(jugador1, jugador2):
 	if repetir != "n":
 		marcador(jugador1, jugador2)
 		jugador1.reset()
+		jugador2.reset()
 		jugador2.pide_palabra(jugador1.nombre, jugador2.nombre)
 		jugador1.oculta_palabra()
-		
-		jugador2.reset()
 		jugador1.pide_palabra(jugador2.nombre, jugador1.nombre)
 		jugador2.oculta_palabra()
 
