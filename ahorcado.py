@@ -1,5 +1,6 @@
 import getpass
 import time
+from textblob import TextBlob
 
 
 class jugador():
@@ -13,6 +14,7 @@ class jugador():
 		self.letras = 3
 		self.letras_escogidas = []
 		self.marcador = 0
+		
 
 	def oculta_palabra(self):
 		letra_oculta = "_ "
@@ -89,9 +91,34 @@ class jugador():
 
 		print("\n------------------------------------------------\n")
 		time.sleep(1)
-	
 
-	
+	def pide_palabra(self, nombre1, nombre2):
+		self.palabra = getpass.getpass(nombre1+ ", introduce la palabra que deberá adivinar " + nombre2 + ": \n").upper()
+		idioma = TextBlob(self.palabra)
+		idioma = idioma.detect_language()
+		if idioma != "es":
+			self.palabra = ""
+			print("Utiliza solo palabras en español.")
+			self.pide_palabra(nombre1, nombre2)
+		if len(self.palabra) > 20:
+			while len(self.palabra) > 20:
+				self.palabra = ""
+				print("Tu palabra es demasiado larga. Prueba otra vez.")
+				self.pide_palabra(nombre1, nombre2)
+		elif " " in self.palabra:
+			while " " in self.palabra:
+				self.palabra=""
+				print("No puedes introducir espacios.")
+				self.pide_palabra(nombre1, nombre2)
+	def reset(self):
+		self.palabra = ""
+		self.errores = 0
+		self.palabra_visual = ""
+		self.contador = 0
+		self.letras = 3
+		self.letras_escogidas = []
+		
+
 def estilo(jugador1, jugador2):
 	margen_nombre = 40 - len(jugador1.nombre)
 	margen_palabra = 40 - len(jugador1.palabra_visual)
@@ -143,42 +170,12 @@ def eljuego(jugador1, jugador2):
 
 	if repetir != "n":
 		marcador(jugador1, jugador2)
-		jugador1.errores = 0
-		jugador1.palabra_visual = ""
-		jugador1.contador = 0
-		jugador1.letras = 3
-		jugador1.letras_escogidas = []
-		jugador1.palabra = getpass.getpass(jugador1.nombre + ", introduce la palabra que deberá adivinar " + jugador2.nombre + ": \n")
-		if len(jugador1.palabra) > 20:
-			while len(jugador1.palabra) > 20:
-				jugador1.palabra=""
-				print("Tu palabra es demasiado larga. Prueba otra vez.")
-				jugador1.palabra = getpass.getpass(jugador1.nombre + ", introduce la palabra que deberá adivinar " + jugador2.nombre + ": \n")
-		elif " " in jugador1.palabra:
-			while " " in jugador1.palabra:
-				jugador1.palabra=""
-				print("No puedes introducir espacios.")
-				jugador1.palabra = getpass.getpass(jugador1.nombre + ", introduce la palabra que deberá adivinar " + jugador2.nombre + ": \n")
-		jugador1.palabra = jugador1.palabra.upper()
+		jugador1.reset()
+		jugador2.pide_palabra(jugador1.nombre, jugador2.nombre)
 		jugador1.oculta_palabra()
 		
-		jugador2.errores = 0
-		jugador2.palabra_visual = ""
-		jugador2.contador = 0
-		jugador2.letras = 3
-		jugador2.letras_escogidas = []		
-		jugador2.palabra = getpass.getpass(jugador2.nombre + ", introduce la palabra que deberá adivinar " + jugador1.nombre + ": \n")
-		if len(jugador2.palabra) > 20:
-			while len(jugador2.palabra) > 20:
-				jugador2.palabra=""
-				print("Tu palabra es demasiado larga. Prueba otra vez.")
-				jugador2.palabra = getpass.getpass(jugador2.nombre + ", introduce la palabra que deberá adivinar " + jugador1.nombre + ": \n")
-		elif " " in jugador2.palabra:
-			while " " in jugador2.palabra:
-				jugador2.palabra=""
-				print("No puedes introducir espacios.")
-				jugador2.palabra = getpass.getpass(jugador2.nombre + ", introduce la palabra que deberá adivinar " + jugador1.nombre + ": \n")
-		jugador2.palabra = jugador2.palabra.upper()
+		jugador2.reset()
+		jugador1.pide_palabra(jugador2.nombre, jugador1.nombre)
 		jugador2.oculta_palabra()
 
 		eljuego(jugador1, jugador2)
@@ -187,40 +184,19 @@ def eljuego(jugador1, jugador2):
 		print("END GAME")
 		time.sleep(2)
 
+
 def main():
+
 	print("\nHola y bienvenidos al juego del ahorcado para 2 jugadores.\n")
 
 	nombre1 = input("Jugador 1, introduce tu nombre: ")
+	jugador1 = jugador(nombre1, "", 0)
 	nombre2 = input("Jugador 2, introduce tu nombre: ")
+	jugador2 = jugador(nombre2, "", 0)
 
-	palabra1 = getpass.getpass(nombre1 + ", introduce la palabra que deberá adivinar " + nombre2 + ": \n")
-	if len(palabra1) > 20:
-		while len(palabra1) > 20:
-			palabra1=""
-			print("Tu palabra es demasiado larga. Prueba otra vez.")
-			palabra1 = getpass.getpass(nombre1 + ", introduce la palabra que deberá adivinar " + nombre2 + ": \n")
-	elif " " in palabra1:
-		while " " in palabra1:
-			palabra1=""
-			print("No puedes introducir espacios.")
-			palabra1 = getpass.getpass(nombre1 + ", introduce la palabra que deberá adivinar " + nombre2 + ": \n")
-
-	palabra2 = getpass.getpass(nombre2 + ", introduce la palabra que deberá adivinar " + nombre1 + ": \n")
-	if len(palabra2) > 20:
-		while len(palabra1) > 20:
-			palabra2=""
-			print("Tu palabra es demasiado larga. Prueba otra vez.")
-			palabra2 = getpass.getpass(nombre2 + ", introduce la palabra que deberá adivinar " + nombre1 + ": \n")
-	elif " " in palabra2:
-		while " " in palabra2:
-			palabra2=""
-			print("No puedes introducir espacios.")
-			palabra2 = getpass.getpass(nombre2 + ", introduce la palabra que deberá adivinar " + nombre1 + ": \n")
-	
-	jugador1 = jugador(nombre1, palabra2, 0)
+	jugador2.pide_palabra(jugador1.nombre, jugador2.nombre)
+	jugador1.pide_palabra(jugador2.nombre, jugador1.nombre)
 	jugador1.oculta_palabra()
-
-	jugador2 = jugador(nombre2, palabra1, 0)
 	jugador2.oculta_palabra()
 
 	eljuego(jugador1, jugador2)
