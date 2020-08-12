@@ -14,6 +14,8 @@ class jugador():
 		self.letras = 3
 		self.letras_escogidas = []
 		self.marcador = 0
+		self.valoresadmitidos = "qweértyuúüiíoópaásdfghjklzxcvbnmQWEÉRTYUÚÜIÍOÓPAÁSDFGHJKLÑZXCVBNM"
+
 		
 	def oculta_palabra(self):
 		letra_oculta = "_ "
@@ -23,20 +25,19 @@ class jugador():
 			self.palabra_visual = self.palabra_visual + letra_oculta
 
 	def recoge_letra(self):
-		valoresadmitidos = "qweértyuúüiíoópaásdfghjklzxcvbnmQWEÉRTYUÚÜIÍOÓPAÁSDFGHJKLÑZXCVBNM"
-
+		
 		letra = input("Turno para " + self.nombre + ". Introduce una letra: \n").upper()
 
-		if letra in valoresadmitidos and len(letra) == 1:
+		if letra in self.valoresadmitidos and len(letra) == 1:
 			pass
-		elif letra in valoresadmitidos and len(letra) != 1:
-			print("Indroduce una unica letra.")
-			while letra not in valoresadmitidos or len(letra) != 1:
+		elif letra in self.valoresadmitidos and len(letra) != 1:
+			print("Indroduce una única letra.")
+			while letra not in self.valoresadmitidos or len(letra) != 1:
 				letra = ""
 				letra = input("Turno para " + self.nombre + ". Introduce una letra: \n").upper()
 		else:
 			print("Ese no es un carater valido.")
-			while letra not in valoresadmitidos or len(letra) != 1:
+			while letra not in self.valoresadmitidos or len(letra) != 1:
 				letra = ""
 				letra = input("Turno para " + self.nombre + ". Introduce una letra: \n").upper()
 
@@ -93,6 +94,10 @@ class jugador():
 
 	def pide_palabra(self, nombre1, nombre2):
 		self.palabra = getpass.getpass(nombre1+ ", introduce la palabra que deberá adivinar " + nombre2 + ": \n").upper()
+		for l in self.palabra:
+			if l not in self.valoresadmitidos:
+				print("Solo puedes introducir palabras en español, sin espacios ni números.")
+				self.pide_palabra(nombre1, nombre2)
 		idioma = TextBlob(self.palabra)
 		idioma = idioma.detect_language()
 		if idioma != "es":
